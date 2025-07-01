@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Install missing dependencies for Next.js, bcryptjs, jsonwebtoken, drizzle-orm types",
+			"command": "pnpm add next @types/next bcryptjs @types/bcryptjs jsonwebtoken @types/jsonwebtoken drizzle-orm @types/node --save-dev",
+			"group": "build",
+			"problemMatcher": [
+				"$tsc"
+			]
+		}
+	]
+}
