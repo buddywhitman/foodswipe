@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Users, Heart, Zap, Star, ChefHat } from "lucide-react"
 import Link from "next/link"
-import { LocationSelector } from "@/components/ui/location-selector"
+import { LandingLocationBar } from "@/components/landing-location-bar"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 export default function LandingPage() {
@@ -19,10 +19,7 @@ export default function LandingPage() {
                 FoodSwipe
               </span>
             </div>
-            <LocationSelector
-              onLocationChange={(location) => console.log("Location changed:", location)}
-              currentLocation={{ city: "Mumbai", country: "India", currency: "INR" }}
-            />
+            <LandingLocationBar />
           </div>
           <div className="hidden md:flex items-center space-x-6">
             <Link href="#features" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 transition-colors">
