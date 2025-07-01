@@ -517,4 +517,18 @@ export default function DeliveryAuthPage() {
                   {/* Availability */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 dark:text-white">Availability</h3>
-                    <div\
+                    <div>
+                      {/* TODO: Add checkboxes for availability options here */}
+                    </div>
+                  </div>
+
+                  {/* TODO: Add more sections for document upload, bank details, emergency contact, terms, and submit button */}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
