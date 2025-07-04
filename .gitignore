@@ -26,3 +26,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# Forced mv, will refactor later
+/server
+/mobile
+.vscode
+
+
