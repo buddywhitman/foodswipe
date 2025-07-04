@@ -26,7 +26,7 @@ export default function NotFound() {
     transition: {
       duration: 4,
       repeat: Number.POSITIVE_INFINITY,
-      ease: "easeInOut",
+      
     },
   }
 
@@ -36,7 +36,7 @@ export default function NotFound() {
     transition: {
       duration: 2,
       repeat: Number.POSITIVE_INFINITY,
-      ease: "easeInOut",
+      
     },
   }
 

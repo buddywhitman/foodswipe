@@ -5,10 +5,12 @@ import { ArrowRight, Users, Heart, Zap, Star, ChefHat } from "lucide-react"
 import Link from "next/link"
 import { LandingLocationBar } from "@/components/landing-location-bar"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { CookieConsent } from "@/components/cookie-consent"
 
-export default function LandingPage() {
+export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+      <CookieConsent />
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b dark:border-gray-700">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -52,7 +54,7 @@ export default function LandingPage() {
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           <Badge className="mb-6 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-800">
-            🎉 Now Live in Indian Cities
+            🎉 Now Live in Manipal!
           </Badge>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent leading-tight">
             Swipe Your Way to

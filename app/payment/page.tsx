@@ -328,7 +328,7 @@ export default function PaymentPage() {
 
               {/* Save Payment Method */}
               <div className="flex items-center space-x-2 mt-4">
-                <Checkbox id="savePayment" checked={savePaymentMethod} onCheckedChange={setSavePaymentMethod} />
+                <Checkbox id="savePayment" checked={savePaymentMethod} onCheckedChange={(checked: boolean | "indeterminate") => setSavePaymentMethod(Boolean(checked))} />
                 <Label htmlFor="savePayment" className="text-sm">
                   Save this payment method for future orders
                 </Label>

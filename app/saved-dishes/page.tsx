@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useCart } from "@/components/cart-context"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -112,6 +113,7 @@ const CUSTOM_LISTS = [
 export default function SavedDishesPage() {
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const { addToCart } = useCart()
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [selectedDishes, setSelectedDishes] = useState<number[]>([])
@@ -179,6 +181,7 @@ export default function SavedDishesPage() {
       setShowCreateList(false)
     }
   }
+  // Example usage: addToCart({ ...dish, quantity: 1 })
 
   // Animation variants
   const containerVariants = {
@@ -234,6 +237,8 @@ export default function SavedDishesPage() {
           {/* Selection checkbox */}
           <div className="absolute top-2 left-2">
             <input
+              placeholder="Search dishes..."
+              title="Search dishes"
               type="checkbox"
               checked={isSelected}
               onChange={() => onSelect(dish.id)}
@@ -332,6 +337,8 @@ export default function SavedDishesPage() {
     >
       <div className="flex items-center p-4 space-x-4">
         <input
+          placeholder="New list name"
+          title="New list name"
           type="checkbox"
           checked={isSelected}
           onChange={() => onSelect(dish.id)}
@@ -481,6 +488,7 @@ export default function SavedDishesPage() {
                   />
                 </div>
                 <select
+                  title="Select list"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"

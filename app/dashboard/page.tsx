@@ -32,12 +32,14 @@ import {
   Gift,
   Heart,
   EyeOff,
+  PlusCircle,
   Home,
   UserCheck,
 } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
+import { useCart } from "@/components/cart-context"
 
 // Enhanced mock data with recommendation reasons
 const SAMPLE_DISHES = [
@@ -129,7 +131,6 @@ export default function DashboardPage() {
   const router = useRouter()
   const [currentDishIndex, setCurrentDishIndex] = useState(0)
   const [likedDishes, setLikedDishes] = useState<number[]>([])
-  const [cartItems, setCartItems] = useState<number[]>([]) // Start with empty cart
   const [showFilters, setShowFilters] = useState(false)
   const [location, setLocation] = useState<{ city: string; country: string; currency: string } | undefined>(undefined)
   const [dishes, setDishes] = useState(SAMPLE_DISHES)
@@ -145,13 +146,30 @@ export default function DashboardPage() {
     deliveryTime: 60,
   })
 
+  // Add this line to use the global cart context
+  const { addToCart } = useCart()
+
   const CUISINES = ["Italian", "North Indian", "South Indian", "Chinese", "Thai", "Mexican", "American"]
   const DIETARY = ["Vegetarian", "Vegan", "Gluten-Free", "Keto", "Halal"]
 
   const handleSwipe = (direction: "left" | "right", dishId: number) => {
     if (direction === "right") {
       setLikedDishes((prev) => [...prev, dishId])
-      setCartItems((prev) => [...prev, dishId])
+      // Use addToCart from context
+      const dish = dishes.find((d) => d.id === dishId)
+      if (dish) {
+        addToCart({
+          id: dish.id.toString(),
+          name: dish.name,
+          price: dish.price,
+          image: dish.images?.[0],
+          quantity: 1,
+          customizations: [],
+          selectedExtras: [],
+          availableExtras: [],
+          specialInstructions: "",
+        })
+      }
     }
 
     // Move to next dish with animation
@@ -163,6 +181,23 @@ export default function DashboardPage() {
         setCurrentDishIndex(0)
       }
     }, 300)
+  }
+
+  const handleAddToCart = (dishId: number) => {
+    const dish = dishes.find((d) => d.id === dishId)
+    if (dish) {
+      addToCart({
+        id: dish.id.toString(),
+        name: dish.name,
+        price: dish.price,
+        image: dish.images?.[0],
+        quantity: 1,
+        customizations: [],
+        selectedExtras: [],
+        availableExtras: [],
+        specialInstructions: "",
+      })
+    }
   }
 
   const handleCompare = (dishId: number) => {
@@ -275,8 +310,8 @@ export default function DashboardPage() {
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/cart">
                   <ShoppingCart className="h-4 w-4" />
-                  {cartItems.length > 0 && (
-                    <Badge className="ml-1 bg-orange-500 text-white text-xs">{cartItems.length}</Badge>
+                  {likedDishes.length > 0 && (
+                    <Badge className="ml-1 bg-orange-500 text-white text-xs">{likedDishes.length}</Badge>
                   )}
                 </Link>
               </Button>
@@ -757,7 +792,7 @@ export default function DashboardPage() {
                             <Button size="sm" variant="outline">
                               <ShoppingCart className="h-3 w-3" />
                             </Button>
-                          </motion.div>
+                          </motion.div>                          
                         ) : null
                       })}
                     </div>
@@ -855,6 +890,14 @@ export default function DashboardPage() {
               <ShoppingCart className="h-5 w-5" />
               <span className="text-xs mt-1">Cart</span>
             </Link>
+          </Button>
+          <Button variant="ghost" size="sm" className="flex flex-col items-center py-2" onClick={() => {
+            const currentDish = dishes[currentDishIndex];
+            if (currentDish) {
+              handleAddToCart(currentDish.id);
+            }
+          }}>
+            <PlusCircle className="h-5 w-5" />
           </Button>
           <Button
             variant="ghost"

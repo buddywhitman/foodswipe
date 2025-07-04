@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useCart } from "@/components/cart-context"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -29,43 +30,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
-// Enhanced mock cart data
-const MOCK_CART_ITEMS = [
-  {
-    id: 1,
-    dishId: 1,
-    name: "Truffle Mushroom Risotto",
-    restaurant: "Bella Vista",
-    image: "/placeholder.svg?height=100&width=100",
-    price: 899,
-    quantity: 1,
-    customizations: ["Extra Parmesan", "Light Salt"],
-    specialInstructions: "",
-    availableExtras: [
-      { id: "extra-cheese", name: "Extra Cheese", price: 50 },
-      { id: "garlic-bread", name: "Garlic Bread", price: 120 },
-      { id: "extra-mushrooms", name: "Extra Mushrooms", price: 80 },
-    ],
-    selectedExtras: [],
-  },
-  {
-    id: 2,
-    dishId: 2,
-    name: "Butter Chicken",
-    restaurant: "Punjabi Dhaba",
-    image: "/placeholder.svg?height=100&width=100",
-    price: 450,
-    quantity: 2,
-    customizations: ["Medium Spicy", "With Naan"],
-    specialInstructions: "Please make it less oily",
-    availableExtras: [
-      { id: "extra-naan", name: "Extra Naan", price: 40 },
-      { id: "raita", name: "Raita", price: 60 },
-      { id: "pickle", name: "Pickle", price: 30 },
-    ],
-    selectedExtras: ["extra-naan"],
-  },
-]
 
 const AVAILABLE_COUPONS = [
   {
@@ -100,8 +64,8 @@ const AVAILABLE_COUPONS = [
 ]
 
 export default function CartPage() {
+  const { cart, updateQuantity, removeFromCart } = useCart()
   const router = useRouter()
-  const [cartItems, setCartItems] = useState<any[]>([])
   const [promoCode, setPromoCode] = useState("")
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null)
   const [showCoupons, setShowCoupons] = useState(false)
@@ -109,37 +73,11 @@ export default function CartPage() {
   const [deliveryInstructions, setDeliveryInstructions] = useState("")
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
 
-  const updateQuantity = (itemId: number, newQuantity: number) => {
-    if (newQuantity === 0) {
-      setCartItems((items) => items.filter((item) => item.id !== itemId))
-    } else {
-      setCartItems((items) => items.map((item) => (item.id === itemId ? { ...item, quantity: newQuantity } : item)))
-    }
-  }
+  // Use global cart context for updateQuantity and removeFromCart
 
-  const removeItem = (itemId: number) => {
-    setCartItems((items) => items.filter((item) => item.id !== itemId))
-  }
-
-  const updateSpecialInstructions = (itemId: number, instructions: string) => {
-    setCartItems((items) =>
-      items.map((item) => (item.id === itemId ? { ...item, specialInstructions: instructions } : item)),
-    )
-  }
-
-  const toggleExtra = (itemId: number, extraId: string) => {
-    setCartItems((items) =>
-      items.map((item) => {
-        if (item.id === itemId) {
-          const selectedExtras = item.selectedExtras.includes(extraId)
-            ? item.selectedExtras.filter((id: string) => id !== extraId)
-            : [...item.selectedExtras, extraId]
-          return { ...item, selectedExtras }
-        }
-        return item
-      }),
-    )
-  }
+  // TODO: If you want to support special instructions/extras, extend CartContext and update logic here
+  const updateSpecialInstructions = (itemId: number, instructions: string) => {}
+  const toggleExtra = (itemId: number, extraId: string) => {}
 
   const validateCoupon = (couponCode: string) => {
     const coupon = AVAILABLE_COUPONS.find((c) => c.id.toLowerCase() === couponCode.toLowerCase())
@@ -214,13 +152,10 @@ export default function CartPage() {
   }
 
   // Calculate totals
-  const subtotal = cartItems.reduce((sum, item) => {
+  const subtotal = cart.reduce((sum, item) => {
     const itemTotal = item.price * item.quantity
-    const extrasTotal = item.selectedExtras.reduce((extraSum: number, extraId: string) => {
-      const extra = item.availableExtras.find((e: any) => e.id === extraId)
-      return extraSum + (extra ? extra.price * item.quantity : 0)
-    }, 0)
-    return sum + itemTotal + extrasTotal
+    // If you want to support extras, add logic here
+    return sum + itemTotal
   }, 0)
 
   const calculateDiscount = () => {
@@ -240,7 +175,7 @@ export default function CartPage() {
   const gst = Math.round((subtotal - discount) * 0.05)
   const total = subtotal - discount + deliveryFee + platformFee + gst
 
-  if (cartItems.length === 0) {
+  if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 transition-colors duration-300">
         <div className="container mx-auto max-w-2xl">
@@ -293,12 +228,12 @@ export default function CartPage() {
             <CardHeader>
               <CardTitle className="flex items-center dark:text-white">
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                Your Order ({cartItems.length} items)
+                Your Order ({cart.length} items)
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <AnimatePresence>
-                {cartItems.map((item) => (
+                {cart.map((item) => (
                   <motion.div
                     key={item.id}
                     layout
@@ -323,56 +258,57 @@ export default function CartPage() {
                         <p className="text-sm text-gray-500 dark:text-gray-400">{item.restaurant}</p>
                         <p className="text-sm font-bold text-orange-500">₹{item.price}</p>
 
-                        {item.customizations.length > 0 && (
+                        {/* Customizations */}
+                        {Array.isArray(item.customizations) && item.customizations.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {item.customizations.map((custom, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs">
-                                {custom}
-                              </Badge>
-                            ))}
+                        {item.customizations.map((custom: string, index: number) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {custom}
+                          </Badge>
+                        ))}
                           </div>
                         )}
 
                         {/* Selected Extras */}
-                        {item.selectedExtras.length > 0 && (
+                        {Array.isArray(item.selectedExtras) && item.selectedExtras.length > 0 && (
                           <div className="mt-2">
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Extras:</p>
-                            {item.selectedExtras.map((extraId) => {
-                              const extra = item.availableExtras.find((e) => e.id === extraId)
-                              return extra ? (
-                                <Badge key={extraId} variant="outline" className="text-xs mr-1">
-                                  {extra.name} (+₹{extra.price})
-                                </Badge>
-                              ) : null
-                            })}
+                        {item.selectedExtras.map((extraId: string) => {
+                          const extra = Array.isArray(item.availableExtras) ? item.availableExtras.find((e: { id: string }) => e.id === extraId) : null
+                          return extra ? (
+                            <Badge key={extraId} variant="outline" className="text-xs mr-1">
+                              {extra.name} (+₹{extra.price})
+                            </Badge>
+                          ) : null
+                        })}
                           </div>
                         )}
 
                         {/* Special Instructions */}
-                        {editingItem === item.id ? (
+                        {editingItem === Number(item.id) ? (
                           <div className="mt-2 space-y-2">
                             <Label className="text-xs">Special Instructions</Label>
                             <Textarea
                               placeholder="Any special requests for this item..."
-                              value={item.specialInstructions}
-                              onChange={(e) => updateSpecialInstructions(item.id, e.target.value)}
+                              value={item.specialInstructions || ""}
+                              onChange={(e) => updateSpecialInstructions(Number(item.id), e.target.value)}
                               className="text-sm"
                               rows={2}
                             />
                             <div className="space-y-2">
                               <Label className="text-xs">Add Extras</Label>
                               <div className="grid grid-cols-2 gap-2">
-                                {item.availableExtras.map((extra) => (
-                                  <Button
-                                    key={extra.id}
-                                    size="sm"
-                                    variant={item.selectedExtras.includes(extra.id) ? "default" : "outline"}
-                                    onClick={() => toggleExtra(item.id, extra.id)}
-                                    className="text-xs h-8"
-                                  >
-                                    {extra.name} (+₹{extra.price})
-                                  </Button>
-                                ))}
+                        {Array.isArray(item.availableExtras) && item.availableExtras.map((extra: { id: string; name: string; price: number }) => (
+                          <Button
+                            key={extra.id}
+                            size="sm"
+                            variant={Array.isArray(item.selectedExtras) && item.selectedExtras.includes(extra.id) ? "default" : "outline"}
+                            onClick={() => toggleExtra(Number(item.id), extra.id)}
+                            className="text-xs h-8"
+                          >
+                            {extra.name} (+₹{extra.price})
+                          </Button>
+                        ))}
                               </div>
                             </div>
                             <Button
@@ -397,7 +333,7 @@ export default function CartPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(String(item.id), item.quantity - 1)}
                             className="h-8 w-8 p-0"
                           >
                             <Minus className="h-3 w-3" />
@@ -406,7 +342,7 @@ export default function CartPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(String(item.id), item.quantity + 1)}
                             className="h-8 w-8 p-0"
                           >
                             <Plus className="h-3 w-3" />
@@ -416,7 +352,7 @@ export default function CartPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => setEditingItem(editingItem === item.id ? null : item.id)}
+                          onClick={() => setEditingItem(editingItem === Number(item.id) ? null : Number(item.id))}
                           className="text-blue-500 hover:text-blue-700 h-8"
                         >
                           <Edit3 className="h-3 w-3" />
@@ -425,7 +361,7 @@ export default function CartPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(item.id)}
                           className="text-red-500 hover:text-red-700 h-8"
                         >
                           <Trash2 className="h-3 w-3" />

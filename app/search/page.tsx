@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useCart } from "@/components/cart-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -203,53 +204,57 @@ export default function SearchPage() {
     handleSearch(suggestion)
   }
 
-  const DishCard = ({ dish }: { dish: any }) => (
-    <Link href={`/dish/${dish.id}`}>
-      <Card className="hover:shadow-lg transition-shadow dark:bg-gray-800">
-        <CardContent className="p-4">
-          <div className="flex space-x-4">
-            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={dish.image || "/placeholder.svg"}
-                alt={dish.name}
-                width={80}
-                height={80}
-                className="w-full h-full object-cover"
-              />
+const DishCard = ({ dish }: { dish: any }) => {
+  const { addToCart } = useCart()
+  return (
+    <Card className="hover:shadow-lg transition-shadow dark:bg-gray-800">
+      <CardContent className="p-4">
+        <div className="flex space-x-4">
+          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+            <Image
+              src={dish.image || "/placeholder.svg"}
+              alt={dish.name}
+              width={80}
+              height={80}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold dark:text-white truncate">{dish.name}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{dish.restaurant}</p>
+            <div className="flex items-center space-x-2 mt-1">
+              <div className="flex items-center">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 mr-1" />
+                <span className="text-xs text-gray-600 dark:text-gray-300">{dish.rating}</span>
+              </div>
+              <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                <Clock className="h-3 w-3 mr-1" />
+                {dish.deliveryTime}
+              </div>
+              <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                <MapPin className="h-3 w-3 mr-1" />
+                {dish.distance}
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold dark:text-white truncate">{dish.name}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{dish.restaurant}</p>
-              <div className="flex items-center space-x-2 mt-1">
-                <div className="flex items-center">
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{dish.rating}</span>
-                </div>
-                <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                  <Clock className="h-3 w-3 mr-1" />
-                  {dish.deliveryTime}
-                </div>
-                <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {dish.distance}
-                </div>
+            <div className="flex items-center justify-between mt-2">
+              <span className="font-bold text-orange-500">₹{dish.price}</span>
+              <div className="flex flex-wrap gap-1">
+                {dish.tags.slice(0, 2).map((tag: string) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
               </div>
-              <div className="flex items-center justify-between mt-2">
-                <span className="font-bold text-orange-500">₹{dish.price}</span>
-                <div className="flex flex-wrap gap-1">
-                  {dish.tags.slice(0, 2).map((tag: string) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+              <Button size="sm" className="ml-2 bg-orange-500 hover:bg-orange-600" onClick={() => addToCart({ ...dish, quantity: 1 })}>
+                Add to Cart
+              </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </Link>
+        </div>
+      </CardContent>
+    </Card>
   )
+}
 
   const RestaurantCard = ({ restaurant }: { restaurant: any }) => (
     <Link href={`/restaurant/${restaurant.id}`}>

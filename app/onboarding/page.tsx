@@ -238,20 +238,20 @@ export default function OnboardingPage() {
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3 + index * 0.05 }}
                 >
-                  <Button
-                    variant={preferences.cuisines.includes(cuisine.id) ? "default" : "outline"}
-                    className={`p-4 h-auto flex flex-col items-center space-y-2 w-full ${
-                      preferences.cuisines.includes(cuisine.id)
-                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
-                        : "bg-transparent hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                    }`}
-                    onClick={() => toggleCuisine(cuisine.id)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span className="text-2xl">{cuisine.emoji}</span>
-                    <span className="text-sm">{cuisine.name}</span>
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant={preferences.cuisines.includes(cuisine.id) ? "default" : "outline"}
+                      className={`p-4 h-auto flex flex-col items-center space-y-2 w-full ${
+                        preferences.cuisines.includes(cuisine.id)
+                          ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                          : "bg-transparent hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                      }`}
+                      onClick={() => toggleCuisine(cuisine.id)}
+                    >
+                      <span className="text-2xl">{cuisine.emoji}</span>
+                      <span className="text-sm">{cuisine.name}</span>
+                    </Button>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>
@@ -282,20 +282,20 @@ export default function OnboardingPage() {
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3 + index * 0.05 }}
                 >
-                  <Button
-                    variant={preferences.dietary.includes(option.id) ? "default" : "outline"}
-                    className={`p-4 h-auto flex flex-col items-center space-y-2 w-full ${
-                      preferences.dietary.includes(option.id)
-                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
-                        : "bg-transparent hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                    }`}
-                    onClick={() => toggleDietary(option.id)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span className="text-2xl">{option.icon}</span>
-                    <span className="text-sm">{option.name}</span>
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant={preferences.dietary.includes(option.id) ? "default" : "outline"}
+                      className={`p-4 h-auto flex flex-col items-center space-y-2 w-full ${
+                        preferences.dietary.includes(option.id)
+                          ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                          : "bg-transparent hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                      }`}
+                      onClick={() => toggleDietary(option.id)}
+                    >
+                      <span className="text-2xl">{option.icon}</span>
+                      <span className="text-sm">{option.name}</span>
+                    </Button>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>

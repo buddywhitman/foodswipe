@@ -50,7 +50,7 @@ export default function JoinGroupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
+    <div className="min-h-screen bg-background dark:bg-gray-900 p-4 transition-colors">
       <div className="container mx-auto max-w-md">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

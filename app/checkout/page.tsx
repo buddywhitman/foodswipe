@@ -134,7 +134,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="savePayment" checked={savePayment} onCheckedChange={setSavePayment} />
+                    <Checkbox id="savePayment" checked={savePayment} onCheckedChange={(checked) => setSavePayment(Boolean(checked))} />
                     <Label htmlFor="savePayment" className="text-sm">
                       Save this payment method for future orders
                     </Label>

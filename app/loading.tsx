@@ -21,7 +21,7 @@ export default function Loading() {
       transition: {
         duration: 3,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
+        
       },
     },
   }
@@ -43,7 +43,7 @@ export default function Loading() {
       transition: {
         duration: 2,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
+        
       },
     },
   }
@@ -55,7 +55,7 @@ export default function Loading() {
       transition: {
         duration: 1.5,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
+        
       },
     },
   }
